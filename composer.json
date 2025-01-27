@@ -1,0 +1,48 @@
+{
+    "name": "paulis.ratnieks/api-key-auth",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel"
+    ],
+    "autoload": {
+        "psr-4": {
+            "PaulisRatnieks\\ApiKeyAuth\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "Paulis Ratnieks"
+        }
+    ],
+    "require": {
+        "illuminate/console": "^11.39",
+        "illuminate/hashing": "^11.39"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.68",
+        "pestphp/pest": "^3.7",
+        "orchestra/testbench": "^9.9"
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/php-cs-fixer fix"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PaulisRatnieks\\ApiKeyAuth\\ApiKeyAuthProvider"
+            ]
+        }
+    }
+}
