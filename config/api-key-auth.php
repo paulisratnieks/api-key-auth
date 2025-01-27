@@ -5,16 +5,21 @@ use PaulisRatnieks\ApiKeyAuth\Validators\IpAddressValidator;
 use PaulisRatnieks\ApiKeyAuth\Validators\RevokedValidator;
 
 return [
+    // This is the model used by the ApiClientMiddleware.
     'model' => ApiClient::class,
 
+    /*
+     * These are all the validators used by the ApiClientMiddleware. You can add or remove any classes
+     * that implement the PaulisRatnieks\ApiKeyAuth\Validators\Validator interface.
+     */
     'validators' => [
         IpAddressValidator::class,
         RevokedValidator::class,
     ],
 
-    // The name of the http header that will be used for authentication
+    // The name of the http header that will be used for authorization.
     'header' => 'Authorization',
 
-    // The key that will hold the authorization header's api key
+    // The key that will hold the authorization header's api key.
     'header_key' => 'ApiKey',
 ];
