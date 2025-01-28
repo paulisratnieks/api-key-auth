@@ -5,7 +5,7 @@ namespace PaulisRatnieks\ApiKeyAuth;
 use Illuminate\Contracts\Hashing\Hasher;
 use SensitiveParameter;
 
-class SHAHasher implements Hasher
+class ShaHasher implements Hasher
 {
     public function info($hashedValue): array
     {

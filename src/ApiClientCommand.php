@@ -2,6 +2,7 @@
 
 namespace PaulisRatnieks\ApiKeyAuth;
 
+use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Str;
@@ -12,15 +13,9 @@ class ApiClientCommand extends Command
 
     protected $description = 'Adds or updates api clients key';
 
-    /**
-     * @var class-string
-     */
-    protected string $model;
-
     public function __construct(private readonly Hasher $hasher)
     {
         parent::__construct();
-        $this->model = config('api-key-auth.model');
     }
 
     public function handle(): void
@@ -34,30 +29,33 @@ class ApiClientCommand extends Command
 
     private function insert(): void
     {
-        do {
+        $result = $this->confirmedAction(function (): array {
             $key = $this->key();
             $name = $this->name();
             $ip = $this->ip();
             $this->displaySummary($name, $ip);
-        } while (!$this->confirm('Is this information correct?'));
-        if ($ip === '') {
-            $ip = null;
-        }
-        $this->model::insert(['key' => $this->hasher->make($key), 'name' => $name, 'revoked' => false, 'allowed_ips' => $ip]);
-        $this->info('Success!');
-        $this->warn('Please copy your client\'s key: ' . $key);
+
+            return compact('key', 'name', 'ip');
+        });
+        $this->model()::insert([
+            'name' => $result['name'],
+            'key' => $this->hasher->make($result['key']),
+            'allowed_ips' => $result['ip'] === '' ? null : $result['ip'],
+        ]);
+        $this->displaySuccess($result['key']);
     }
 
     private function update(): void
     {
-        do {
+        $result = $this->confirmedAction(function (): array {
             $key = $this->key();
             $id = $this->id();
-            $this->info('Clients ID: ' . $id);
-        } while (!$this->confirm('Is this information correct?'));
-        $this->model::where('id', $id)->update(['key' => $this->hasher->make($key)]);
-        $this->info('Success!');
-        $this->warn('Please copy your client\'s key: ' . $key);
+
+            return compact('key', 'id');
+        });
+        $this->model()::find($result['id'])
+            ->update(['key' => $this->hasher->make($result['key'])]);
+        $this->displaySuccess($result['key']);
     }
 
     private function ip(): string
@@ -71,11 +69,13 @@ class ApiClientCommand extends Command
     {
         $this->comment('Entered information: ');
         $this->comment(' Client\'s name: ' . $name);
-        if ($ip === '') {
-            $this->comment(' IP Address: [NONE]');
-        } else {
-            $this->comment(' IP address: ' . $ip);
-        }
+        $this->comment(' IP address: ' . ($ip === '' ? '[NONE]' : $ip));
+    }
+
+    private function displaySuccess(string $key): void
+    {
+        $this->info('Success!');
+        $this->warn('Please copy your client\'s key: ' . $key);
     }
 
     private function name(): string
@@ -99,5 +99,22 @@ class ApiClientCommand extends Command
     private function key(): string
     {
         return (string) Str::uuid();
+    }
+
+    private function confirmedAction(Closure $action): mixed
+    {
+        do {
+            $result = $action();
+        } while (!$this->confirm('Is this information correct?'));
+
+        return $result;
+    }
+
+    /**
+     * @return class-string
+     */
+    private function model(): string
+    {
+        return config('api-key-auth.model');
     }
 }

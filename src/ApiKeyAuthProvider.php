@@ -10,10 +10,10 @@ class ApiKeyAuthProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/api-key-auth.php' => config_path('api-key-auth.php'),
+            dirname(__DIR__) . '/config/api-key-auth.php' => config_path('api-key-auth.php'),
         ], 'config');
         $this->publishesMigrations([
-            __DIR__ . '/../database/migrations' => database_path('migrations'),
+            dirname(__DIR__) . '/database/migrations' => database_path('migrations'),
         ]);
 
         if ($this->app->runningInConsole()) {
@@ -24,13 +24,13 @@ class ApiKeyAuthProvider extends ServiceProvider
 
         $this->app->when([ApiClientFetcher::class, ApiClientCommand::class])
             ->needs(Hasher::class)
-            ->give(SHAHasher::class);
+            ->give(ShaHasher::class);
     }
 
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/api-key-auth.php', 'api-key-auth'
+            dirname(__DIR__) . '/config/api-key-auth.php', 'api-key-auth'
         );
     }
 }

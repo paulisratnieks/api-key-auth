@@ -6,7 +6,7 @@ use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Override;
 use PaulisRatnieks\ApiKeyAuth\ApiKeyAuthProvider;
-use PaulisRatnieks\ApiKeyAuth\SHAHasher;
+use PaulisRatnieks\ApiKeyAuth\ShaHasher;
 use Tests\Support\Models\ApiClient;
 
 abstract class TestCase extends Orchestra
@@ -21,7 +21,7 @@ abstract class TestCase extends Orchestra
         (require __DIR__ . '/../database/migrations/create_api_clients_table.php.stub')
             ->up();
 
-        $this->app->bind('hash', SHAHasher::class);
+        $this->app->bind('hash', ShaHasher::class);
     }
 
     public function createApiClient(string $model = ApiClient::class): string

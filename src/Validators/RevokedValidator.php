@@ -13,7 +13,7 @@ class RevokedValidator implements Validator
      */
     public function handle(Model $client, Closure $next): mixed
     {
-        if ($client->revoked === true) {
+        if ($client->revoked) {
             throw new AuthenticationException('You are not authorized to execute this action.');
         }
 

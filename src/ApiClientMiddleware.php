@@ -6,14 +6,13 @@ namespace PaulisRatnieks\ApiKeyAuth;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Pipeline;
 
 class ApiClientMiddleware
 {
     public function handle(Request $request, Closure $next): mixed
     {
-        app(Pipeline::class)
-            ->send($request)
+        Pipeline::send($request)
             ->through([
                 ApiClientFetcher::class,
                 ...config('api-key-auth.validators'),

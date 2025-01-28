@@ -37,7 +37,6 @@ test('api client command with regenerate flag updates model', function (): void 
 
     $this->artisan('api:client', ['--regenerate' => true])
         ->expectsQuestion('Please enter client\'s id', $client->id)
-        ->expectsOutput('Clients ID: ' . $client->id)
         ->expectsQuestion('Is this information correct?', 'yes')
         ->expectsOutput('Success!')
         ->expectsOutputToContain('Please copy your client\'s key: ' . $key)
