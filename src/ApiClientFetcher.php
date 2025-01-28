@@ -13,10 +13,8 @@ class ApiClientFetcher
 
     public function handle(Request $request, Closure $next): mixed
     {
-        $modelClass = config('api-key-auth.model');
-
         return $next(
-            $modelClass::where('key', $this->apiKey($request))
+            config('api-key-auth.model')::where('key', $this->apiKey($request))
                 ->firstOrFail()
         );
     }

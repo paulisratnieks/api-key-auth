@@ -4,6 +4,9 @@ namespace PaulisRatnieks\ApiKeyAuth;
 
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\ServiceProvider;
+use PaulisRatnieks\ApiKeyAuth\Commands\ApiClientListCommand;
+use PaulisRatnieks\ApiKeyAuth\Commands\ApiClientMakeCommand;
+use PaulisRatnieks\ApiKeyAuth\Commands\ApiClientUpdateCommand;
 
 class ApiKeyAuthProvider extends ServiceProvider
 {
@@ -18,11 +21,13 @@ class ApiKeyAuthProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                ApiClientCommand::class,
+                ApiClientMakeCommand::class,
+                ApiClientUpdateCommand::class,
+                ApiClientListCommand::class,
             ]);
         }
 
-        $this->app->when([ApiClientFetcher::class, ApiClientCommand::class])
+        $this->app->when([ApiClientFetcher::class, ApiClientMakeCommand::class, ApiClientUpdateCommand::class])
             ->needs(Hasher::class)
             ->give(ShaHasher::class);
     }
