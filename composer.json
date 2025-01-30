@@ -1,9 +1,14 @@
 {
-    "name": "paulis.ratnieks/api-key-auth",
+    "name": "paulisratnieks/api-key-auth",
+    "description": "API client authentication, authorization and management",
     "type": "library",
     "license": "MIT",
     "keywords": [
-        "laravel"
+        "php",
+        "laravel",
+        "api client",
+        "authentication",
+        "authorization"
     ],
     "autoload": {
         "psr-4": {
@@ -21,8 +26,7 @@
         }
     ],
     "require": {
-        "illuminate/console": "^11.39",
-        "illuminate/hashing": "^11.39"
+        "php": "^8.3"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.68",
@@ -41,7 +45,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "PaulisRatnieks\\ApiKeyAuth\\ApiKeyAuthProvider"
+                "PaulisRatnieks\\ApiKeyAuth\\ApiKeyAuthServiceProvider"
             ]
         }
     }

@@ -1,17 +1,17 @@
 # Simple API client generation and authentication
-`api-key-auth` is a highly customizable Laravel package for API client management and authentication. The package contains a single middleware `ApiClientMiddleware` and a few artisan commands to manage the clients.
+`api-key-auth` is a highly customizable Laravel package for API client management, authentication and authorization. The package contains a single middleware `ApiClientMiddleware` and a few artisan commands to manage the clients.
 
 ## Installation
 You can install the package via composer:
 
 ``` bash
-composer require paulis.ratnieks/api-key-auth
+composer require paulisratnieks/api-key-auth
 ```
 
 You should publish the config file `config/api-key-auth.php` and run the migrations to create the `api_clients` table:
 
 ```bash
-php artisan vendor:publish --provider="PaulisRatnieks\ApiKeyAuth\ApiKeyAuthProvider"
+php artisan vendor:publish --provider="PaulisRatnieks\ApiKeyAuth\ApiKeyAuthServiceProvider"
 php artisan migrate
 ```
 

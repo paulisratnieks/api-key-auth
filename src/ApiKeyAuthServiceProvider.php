@@ -8,7 +8,7 @@ use PaulisRatnieks\ApiKeyAuth\Commands\ApiClientListCommand;
 use PaulisRatnieks\ApiKeyAuth\Commands\ApiClientMakeCommand;
 use PaulisRatnieks\ApiKeyAuth\Commands\ApiClientUpdateCommand;
 
-class ApiKeyAuthProvider extends ServiceProvider
+class ApiKeyAuthServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
@@ -20,11 +20,7 @@ class ApiKeyAuthProvider extends ServiceProvider
         ]);
 
         if ($this->app->runningInConsole()) {
-            $this->commands([
-                ApiClientMakeCommand::class,
-                ApiClientUpdateCommand::class,
-                ApiClientListCommand::class,
-            ]);
+            $this->registerCommands();
         }
 
         $this->app->when([ApiClientFetcher::class, ApiClientMakeCommand::class, ApiClientUpdateCommand::class])
@@ -37,5 +33,14 @@ class ApiKeyAuthProvider extends ServiceProvider
         $this->mergeConfigFrom(
             dirname(__DIR__) . '/config/api-key-auth.php', 'api-key-auth'
         );
+    }
+
+    protected function registerCommands(): void
+    {
+        $this->commands([
+            ApiClientMakeCommand::class,
+            ApiClientUpdateCommand::class,
+            ApiClientListCommand::class,
+        ]);
     }
 }

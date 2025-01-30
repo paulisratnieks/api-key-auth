@@ -12,12 +12,7 @@ class ApiClientMakeCommand extends Command
 
     protected $description = 'Create an API client';
 
-    public function __construct(private readonly Hasher $hasher)
-    {
-        parent::__construct();
-    }
-
-    public function handle(): void
+    public function handle(Hasher $hasher): void
     {
         do {
             $key = (string) Str::uuid();
@@ -34,7 +29,7 @@ class ApiClientMakeCommand extends Command
 
         config('api-key-auth.model')::insert([
             'name' => $name,
-            'key' => $this->hasher->make($key),
+            'key' => $hasher->make($key),
             'allowed_ips' => empty($ip) ? null : $ip,
         ]);
         $this->warn('Please copy API client\'s key: ' . $key);

@@ -16,12 +16,7 @@ class ApiClientUpdateCommand extends Command
 
     protected $description = 'Update an API client';
 
-    public function __construct(private readonly Hasher $hasher)
-    {
-        parent::__construct();
-    }
-
-    public function handle(): void
+    public function handle(Hasher $hasher): void
     {
         $action = $this->choice(
             'What update action would you like to use?',
@@ -41,7 +36,7 @@ class ApiClientUpdateCommand extends Command
 
         $client->updateOrFail(
             match ($action) {
-                UpdateAction::Regenerate->value => $this->regenerate(),
+                UpdateAction::Regenerate->value => $this->regenerate($hasher),
                 UpdateAction::Revoke->value => ['revoked' => true],
                 UpdateAction::RemoveRevoke->value => ['revoked' => false],
                 default => throw new Exception('Unsupported action: ' . $action)
@@ -50,13 +45,13 @@ class ApiClientUpdateCommand extends Command
         $this->info('API client updated successfully.');
     }
 
-    private function regenerate(): array
+    private function regenerate(Hasher $hasher): array
     {
         $key = (string) Str::uuid();
         $this->warn('Please copy API client\'s key: ' . $key);
 
         return [
-            'key' => $this->hasher->make($key),
+            'key' => $hasher->make($key),
         ];
     }
 }
