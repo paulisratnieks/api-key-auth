@@ -11,23 +11,15 @@ use Illuminate\Support\Collection;
  */
 class AsList implements CastsAttributes
 {
-    public function get(
-        Model $model,
-        string $key,
-        mixed $value,
-        array $attributes,
-    ): Collection {
+    public function get(Model $model, string $key, mixed $value, array $attributes): Collection
+    {
         return str($value)
             ->explode(',')
             ->map(fn (string $ip): string => trim($ip));
     }
 
-    public function set(
-        Model $model,
-        string $key,
-        mixed $value,
-        array $attributes,
-    ): string {
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    {
         return $value;
     }
 }
