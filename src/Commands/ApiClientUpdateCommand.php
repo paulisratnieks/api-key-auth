@@ -16,18 +16,21 @@ class ApiClientUpdateCommand extends Command
 
     protected $description = 'Update an API client';
 
+    /**
+     * @throws Exception
+     */
     public function handle(Hasher $hasher): void
     {
         $action = $this->choice(
             'What update action would you like to use?',
             collect(UpdateAction::cases())
-                ->map(fn (BackedEnum $action) => $action->value)
+                ->map(fn (BackedEnum $action): string => $action->value)
                 ->toArray(),
         );
 
         do {
+            $id = $this->ask('Please enter API client\'s id');
             try {
-                $id = $this->ask('Please enter API client\'s id');
                 $client = config('api-key-auth.model')::findOrFail($id);
             } catch (ModelNotFoundException) {
                 $this->error('API client with id=' . $id . ' not found');
@@ -35,10 +38,10 @@ class ApiClientUpdateCommand extends Command
         } while (empty($client));
 
         $client->updateOrFail(
-            match ($action) {
-                UpdateAction::Regenerate->value => $this->regenerate($hasher),
-                UpdateAction::Revoke->value => ['revoked' => true],
-                UpdateAction::RemoveRevoke->value => ['revoked' => false],
+            match (UpdateAction::tryFrom($action)) {
+                UpdateAction::Regenerate => $this->regenerate($hasher),
+                UpdateAction::Revoke => ['revoked' => true],
+                UpdateAction::RemoveRevoke => ['revoked' => false],
                 default => throw new Exception('Unsupported action: ' . $action)
             }
         );

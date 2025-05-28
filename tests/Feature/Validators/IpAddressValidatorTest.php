@@ -1,17 +1,14 @@
 <?php
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Route;
-use PaulisRatnieks\ApiKeyAuth\ApiClientMiddleware;
 use Tests\Support\Models\ApiClient;
+use Tests\Support\Routing\ApiClientRoute;
 
 beforeEach(function (): void {
-    Route::get('/', fn (): JsonResponse => response()->json())
-        ->middleware(ApiClientMiddleware::class);
+    (new ApiClientRoute())();
 });
 
 test('ip address validator succeeds when request ip in whitelist', function (): void {
-    $this->withToken($this->createApiClient(), config('api-key-auth.header_key'))
+    $this->asApiClient()
         ->getJson('/')
         ->assertOk();
 });
@@ -21,7 +18,7 @@ test('ip address validator fails when request ip not in whitelist', function ():
     ApiClient::factory()
         ->key($key)
         ->state([
-            'allowed_ips' => fake()->ipv4(),
+            'allowed_ips' => fake()->ipv4() . ',' . fake()->ipv4(),
         ])
         ->create();
 

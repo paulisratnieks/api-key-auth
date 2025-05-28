@@ -3,6 +3,7 @@
 use PaulisRatnieks\ApiKeyAuth\ApiClient;
 use PaulisRatnieks\ApiKeyAuth\Validators\IpAddressValidator;
 use PaulisRatnieks\ApiKeyAuth\Validators\RevokedValidator;
+use PaulisRatnieks\ApiKeyAuth\Validators\ScopeValidator;
 
 return [
     // This is the model used by the ApiClientMiddleware.
@@ -15,6 +16,7 @@ return [
     'validators' => [
         IpAddressValidator::class,
         RevokedValidator::class,
+        ScopeValidator::class,
     ],
 
     // The name of the http header that will be used for authorization.

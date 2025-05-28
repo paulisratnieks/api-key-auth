@@ -1,6 +1,6 @@
 <?php
 
-namespace PaulisRatnieks\ApiKeyAuth;
+namespace PaulisRatnieks\ApiKeyAuth\Actions;
 
 use Closure;
 use Illuminate\Contracts\Hashing\Hasher;

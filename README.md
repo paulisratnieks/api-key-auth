@@ -53,6 +53,7 @@ return [
     'validators' => [
         PaulisRatnieks\ApiKeyAuth\Validators\IpAddressValidator::class,
         PaulisRatnieks\ApiKeyAuth\Validators\RevokedValidator::class,
+        PaulisRatnieks\ApiKeyAuth\Validators\ScopeValidator::class,
     ],
 
     // The name of the http header that will be used for authentication.

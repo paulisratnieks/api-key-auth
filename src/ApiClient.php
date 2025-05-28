@@ -2,13 +2,11 @@
 
 namespace PaulisRatnieks\ApiKeyAuth;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use PaulisRatnieks\ApiKeyAuth\Casts\AsList;
 
 class ApiClient extends Model
 {
-    use HasFactory;
-
     /** @var list<string> */
     public $guarded = [
         'id',
@@ -24,5 +22,7 @@ class ApiClient extends Model
      */
     protected $casts = [
         'revoked' => 'boolean',
+        'scopes' => AsList::class,
+        'allowed_ips' => AsList::class,
     ];
 }
