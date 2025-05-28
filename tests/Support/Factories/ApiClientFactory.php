@@ -18,8 +18,9 @@ class ApiClientFactory extends Factory
         return [
             'key' => Hash::make(fake()->uuid()),
             'name' => fake()->word(),
-            'allowed_ips' => '127.0.0.1,::1',
+            'allowed_ips' => '127.0.0.1',
             'revoked' => false,
+            'scopes' => '',
         ];
     }
 

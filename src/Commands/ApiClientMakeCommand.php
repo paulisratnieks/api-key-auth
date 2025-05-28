@@ -12,26 +12,53 @@ class ApiClientMakeCommand extends Command
 
     protected $description = 'Create an API client';
 
+    protected array $columnPrompts = [
+        'name' => [
+            'text' => 'Enter API client\'s name',
+            'required' => true,
+        ],
+        'allowed_ips' => [
+            'text' => 'Enter API client\'s IP address (Ex: 127.0.0.1,192.168.0.1)',
+            'required' => false,
+        ],
+        'scopes' => [
+            'text' => 'Enter API client\'s scopes (Ex: read:Users,write:Users)',
+            'required' => false,
+        ],
+    ];
+
     public function handle(Hasher $hasher): void
     {
         do {
             $key = (string) Str::uuid();
 
-            $name = $this->ask('Please enter API client\'s name');
+            $inputs = collect($this->columnPrompts)->mapWithKeys(function (array $prompt, string $column): array {
+                $text = str($prompt['text']);
+                if ($prompt['required'] === false) {
+                    $text = $text->append(' (empty allowed)');
+                }
 
-            $this->comment('Example IP (IPV4 and/or IPV6) format - comma separated list: 127.0.0.1,684D:1111:222:3333:4444:5555:6:77,192.168.0.1');
-            $ip = $this->ask('Please enter API client\'s IP address (leave it blank for none)') ?? '';
+                do {
+                    $input = $this->ask($text) ?? '';
+                } while ($prompt['required'] === true && empty($input));
+
+                return [$column => $input];
+            });
 
             $this->comment('Entered information: ');
-            $this->comment(' Client\'s name: ' . $name);
-            $this->comment(' IP address: ' . ($ip === '' ? '[NONE]' : $ip));
+            $inputs->each(function (string $input, string $column): void {
+                $this->comment(
+                    str($column)->headline()
+                        ->append(': ', empty($input) ? '[None]' : $input),
+                );
+            });
         } while (!$this->confirm('Is this information correct?'));
 
-        config('api-key-auth.model')::insert([
-            'name' => $name,
+        config('api-key-auth.model')::create([
             'key' => $hasher->make($key),
-            'allowed_ips' => empty($ip) ? null : $ip,
+            ...$inputs->mapWithKeys(fn (string $input, string $column) => [$column => empty($input) ? null : $input]),
         ]);
+
         $this->warn('Please copy API client\'s key: ' . $key);
         $this->info('API client created successfully.');
     }

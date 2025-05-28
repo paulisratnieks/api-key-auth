@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Override;
@@ -24,14 +25,28 @@ abstract class TestCase extends Orchestra
         $this->app->bind('hash', ShaHasher::class);
     }
 
-    public function createApiClient(string $model = ApiClient::class): string
+    /**
+     * @param null|Factory<ApiClient> $factory
+     */
+    public function apiClientKey(?Factory $factory = null): string
     {
         $key = fake()->uuid();
-        $model::factory()
+        ($factory ?? ApiClient::factory())
             ->key($key)
             ->create();
 
         return $key;
+    }
+
+    /**
+     * @param null|Factory<ApiClient> $factory
+     */
+    public function asApiClient(?Factory $factory = null): TestCase
+    {
+        return $this->withToken(
+            $this->apiClientKey($factory),
+            config('api-key-auth.header_key')
+        );
     }
 
     /**

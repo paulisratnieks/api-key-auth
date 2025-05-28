@@ -7,6 +7,7 @@ namespace PaulisRatnieks\ApiKeyAuth;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Pipeline;
+use PaulisRatnieks\ApiKeyAuth\Actions\ApiClientFetcher;
 
 class ApiClientMiddleware
 {

@@ -27,7 +27,7 @@ test('api client middleware throws not found with non existent client', function
 });
 
 test('api client middleware passes with existing api client', function (): void {
-    $this->withToken($this->createApiClient(), config('api-key-auth.header_key'))
+    $this->asApiClient()
         ->getJson('/')
         ->assertOk();
 });
@@ -38,7 +38,7 @@ test('api client uses configured authorization header values', function (): void
         'api-key-auth.header_key' => 'CustomHeaderKey',
     ]);
 
-    $this->withHeaders([config('api-key-auth.header') => config('api-key-auth.header_key') . ' ' . $this->createApiClient()])
+    $this->withHeaders([config('api-key-auth.header') => config('api-key-auth.header_key') . ' ' . $this->apiClientKey()])
         ->getJson('/')
         ->assertOk();
 });
@@ -53,7 +53,7 @@ test('api client middleware uses configured model', function (): void {
             });
     });
 
-    $this->withToken($this->createApiClient(CustomApiClient::class), config('api-key-auth.header_key'))
+    $this->asApiClient(CustomApiClient::factory())
         ->getJson('/')
         ->assertOk();
 });
@@ -69,7 +69,7 @@ test('api client middleware uses configured validators', function (): void {
         },
     ]]);
 
-    $this->withToken($this->createApiClient(), config('api-key-auth.header_key'))
+    $this->withToken($this->apiClientKey(), config('api-key-auth.header_key'))
         ->getJson('/')
         ->assertInternalServerError();
 

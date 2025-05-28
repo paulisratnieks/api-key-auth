@@ -14,12 +14,12 @@ test('api client update command with regenerate action regenerates key', functio
 
     $this->artisan('api-client:list')
         ->expectsTable(
-            ['ID', 'Name', 'Allowed IP\'s', 'Revoked'],
+            ['Id', 'Name', 'Allowed Ips', 'Revoked', 'Scopes'],
             $clients->map(fn (ApiClient $client): array => [
-                ...collect($client->only('id', 'name', 'allowed_ips'))
-                    ->values()
-                    ->toArray(),
+                ...collect($client->only('id', 'name'))->values()->toArray(),
+                $client->allowed_ips->implode(','),
                 $client->revoked ? 'true' : 'false',
+                $client->scopes->implode(','),
             ]
             )->toArray(),
         )

@@ -14,8 +14,9 @@ return new class extends Migration {
             $table->id();
             $table->string('key')->unique();
             $table->string('name');
+            $table->string('scopes')->default('');
             $table->boolean('revoked')->default(false);
-            $table->string('allowed_ips', 1024)->nullable();
+            $table->string('allowed_ips', 1024)->default('');
             $table->timestamps();
         });
     }
