@@ -15,11 +15,12 @@ class AsList implements CastsAttributes
     {
         return str($value)
             ->explode(',')
+            ->filter(fn (string $ip): bool => $ip !== '')
             ->map(fn (string $ip): string => trim($ip));
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return $value;
+        return is_string($value) ? $value : '';
     }
 }
